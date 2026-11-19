@@ -1,22 +1,18 @@
-NAMES                 STATUS
-n3iwue                Up 3 hours
-ueransim              Up 3 hours
-n3iwf                 Up 3 hours
-chf                   Up 3 hours
-tngf                  Exited (0) 3 hours ago
-udr                   Up 3 hours
-webui                 Up 3 hours
-ausf                  Up 3 hours
-nef                   Up 3 hours
-amf                   Up 3 hours
-nssf                  Up 3 hours
-pcf                   Up 3 hours
-smf                   Up 3 hours
-udm                   Up 3 hours
-nrf                   Up 3 hours
-mongodb               Up 3 hours
-upf                   Up 3 hours
-affectionate_mclean   Exited (0) 34 hours ago
-yolo_frontend         Exited (0) 2 months ago
-yolo_backend          Exited (0) 2 months ago
-laughing_solomon      Exited (0) 3 months ago
+NAME       STATUS
+amf        Up 4 hours
+ausf       Up 4 hours
+chf        Up 4 hours
+mongodb    Up 4 hours
+n3iwf      Up 4 hours
+n3iwue     Up 4 hours
+nef        Up 4 hours
+nrf        Up 4 hours
+nssf       Up 4 hours
+pcf        Up 4 hours
+smf        Up 4 hours
+tngf       Exited (0) 3 hours ago
+udm        Up 4 hours
+udr        Up 4 hours
+ueransim   Up 4 hours
+upf        Up 3 hours
+webui      Up 4 hours
