@@ -1,0 +1,2 @@
+gtp5g                 163840  0
+udp_tunnel             36864  2 gtp5g,sctp

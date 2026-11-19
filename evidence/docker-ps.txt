@@ -1,0 +1,16 @@
+NAMES      STATUS
+n3iwue     Up 20 seconds
+ueransim   Up 28 seconds
+n3iwf      Up 22 seconds
+chf        Up 22 seconds
+udr        Up 24 seconds
+webui      Up 27 seconds
+ausf       Up 23 seconds
+nef        Up 27 seconds
+amf        Up 29 seconds
+nssf       Up 23 seconds
+pcf        Up 25 seconds
+smf        Up 24 seconds
+udm        Up 26 seconds
+nrf        Up 30 seconds
+mongodb    Up 32 seconds
