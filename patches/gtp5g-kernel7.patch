@@ -1,8 +1,19 @@
 diff --git a/src/gtpu/encap.c b/src/gtpu/encap.c
-index 072178c..7593b23 100644
+index 233e7c5..27f8bcf 100644
 --- a/src/gtpu/encap.c
 +++ b/src/gtpu/encap.c
-@@ -87,7 +87,7 @@ struct sock *gtp5g_encap_enable(int fd, int type, struct gtp5g_dev *gtp){
+@@ -26,6 +26,10 @@
+ #include "api_version.h"
+ #include "pktinfo.h"
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0)
++#include <net/inet_dscp.h>
++#endif
++
+ /* used to compatible with api with/without seid */
+ #define MSG_KOV_LEN 4
+ 
+@@ -83,7 +87,7 @@ struct sock *gtp5g_encap_enable(int fd, int type, struct gtp5g_dev *gtp){
      tuncfg.encap_rcv = gtp5g_encap_recv;
      tuncfg.encap_destroy = gtp5g_encap_disable_locked;
  
@@ -11,3 +22,75 @@ index 072178c..7593b23 100644
  
  out_sock:
      release_sock(sock->sk);
+@@ -996,7 +1000,12 @@ static struct rtable *find_ip4_route(struct flowi4 *fl4,
+     fl4->flowi4_oif = sk->sk_bound_dev_if;
+     fl4->daddr = daddr;
+     fl4->saddr = saddr;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0)
++    fl4->flowi4_dscp = inet_sk_dscp(inet_sk(sk));
++    fl4->flowi4_scope = ip_sock_rt_scope(sk);
++#else
+     fl4->flowi4_tos = RT_TOS(inet_sk(sk)->tos);
++#endif
+     fl4->flowi4_proto = sk->sk_protocol;
+     return ip_route_output_key(sock_net(sk), fl4);
+ }
+diff --git a/src/gtpu/pktinfo.c b/src/gtpu/pktinfo.c
+index e3e4c7f..0e221a4 100644
+--- a/src/gtpu/pktinfo.c
++++ b/src/gtpu/pktinfo.c
+@@ -13,6 +13,10 @@
+ #include "pktinfo.h"
+ #include "log.h"
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0)
++#include <net/inet_dscp.h>
++#endif
++
+ u64 network_and_transport_header_len(struct sk_buff *skb) {
+     u64 hdrlen;
+     struct iphdr *iph;
+@@ -74,7 +78,12 @@ struct rtable *ip4_find_route(struct sk_buff *skb, struct iphdr *iph,
+     fl4->flowi4_oif = sk->sk_bound_dev_if;
+     fl4->daddr = daddr;
+     fl4->saddr = (saddr ? saddr : inet_sk(sk)->inet_saddr);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0)
++    fl4->flowi4_dscp = inet_sk_dscp(inet_sk(sk));
++    fl4->flowi4_scope = ip_sock_rt_scope(sk);
++#else
+     fl4->flowi4_tos = RT_TOS(inet_sk(sk)->tos) | sock_flag(sk, SOCK_LOCALROUTE);
++#endif
+     fl4->flowi4_proto = sk->sk_protocol;
+ 
+     rt = ip_route_output_key(dev_net(gtp_dev), fl4);
+@@ -136,7 +145,12 @@ struct rtable *ip4_find_route_simple(struct sk_buff *skb,
+     fl4->flowi4_oif = sk->sk_bound_dev_if;
+     fl4->daddr = daddr;
+     fl4->saddr = (saddr ? saddr : inet_sk(sk)->inet_saddr);
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 18, 0)
++    fl4->flowi4_dscp = inet_sk_dscp(inet_sk(sk));
++    fl4->flowi4_scope = ip_sock_rt_scope(sk);
++#else
+     fl4->flowi4_tos = RT_TOS(inet_sk(sk)->tos) | sock_flag(sk, SOCK_LOCALROUTE);
++#endif
+     fl4->flowi4_proto = sk->sk_protocol;
+ 
+     rt = ip_route_output_key(dev_net(gtp_dev), fl4);
+diff --git a/src/pfcp/pdr.c b/src/pfcp/pdr.c
+index 7af4d75..e56c3d4 100644
+--- a/src/pfcp/pdr.c
++++ b/src/pfcp/pdr.c
+@@ -151,8 +151,13 @@ int unix_sock_client_new(struct pdr *pdr)
+         return err;
+     }
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 0, 0)
++    err = (*psock)->ops->connect(*psock, (struct sockaddr_unsized *)addr,
++            sizeof(addr->sun_family) + strlen(addr->sun_path), 0);
++#else
+     err = (*psock)->ops->connect(*psock, (struct sockaddr *)addr,
+             sizeof(addr->sun_family) + strlen(addr->sun_path), 0);
++#endif
+     if (err) {
+         unix_sock_client_delete(pdr);
+         return err;

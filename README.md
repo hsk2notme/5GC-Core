@@ -5,7 +5,7 @@ Ghi chép và bằng chứng lab của tôi, chạy free5GC (SA) trên máy ảo
 ## Môi trường
 - VMware Workstation, Ubuntu, kernel 7.0.0-43, 5 GB RAM, 2 CPU
 - free5GC qua [free5gc-compose](https://github.com/free5gc/free5gc-compose) (commit: evidence/free5gc-compose-commit.txt)
-- gtp5g nhánh master + bản vá `patches/gtp5g-kernel7.patch`
+- gtp5g v0.10.2 + commit a2a19e2 (sửa build kernel 7.0) + bản vá `sock->sk` (`patches/gtp5g-kernel7.patch`)
 
 ## Tiến độ
 | Stage | Nội dung | Trạng thái |
